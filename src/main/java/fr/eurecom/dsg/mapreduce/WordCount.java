@@ -1,15 +1,22 @@
 package fr.eurecom.dsg.mapreduce;
 
-import java.io.IOException;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapred.FileInputFormat;
+import org.apache.hadoop.mapred.TextInputFormat;
+import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.io.Text;
+
+import java.io.IOException;
 
 /**
  * Word Count example of MapReduce job. Given a plain text in input, this job
@@ -28,17 +35,29 @@ public class WordCount extends Configured implements Tool {
 
         Configuration conf = this.getConf();
         Job job = null; // TODO: define new job instead of null using conf
-
-        // TODO: set job input format
+        job = new Job(conf, "Word Count");
+        // TODO: set job input format\
+        job.setInputFormatClass(TextInputFormat.class);
         // TODO: set map class and the map output key and value classes
+        job.setMapperClass(WCMapper.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         // TODO: set reduce class and the reduce output key and value classes
+        job.setReducerClass(WCReducer.class);
         // TODO: set job output format
+        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
         // TODO: add the input file as job input (from HDFS) to the variable
         //       inputPath
+        FileInputFormat.addInputPath(job, inputPath);
         // TODO: set the output path for the job results (to HDFS) to the variable
         //       outputPath
+        FileOutputFormat.setOutputPath(job, outputDir);
         // TODO: set the number of reducers using variable numberReducers
+        job.setNumReduceTasks(numReducers);
         // TODO: set the jar class
+        job.setJarByClass(WordCount.class);
 
         return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
     }
@@ -59,25 +78,32 @@ public class WordCount extends Configured implements Tool {
     }
 }
 
-class WCMapper extends Mapper<Object, // TODO: change Object to input key type
-        Object, // TODO: change Object to input value type
-        Object, // TODO: change Object to output key type
-        Object> { // TODO: change Object to output value type
+class WCMapper extends Mapper<LongWritable, // TODO: change Object to input key type
+        Text, // TODO: change Object to input value type
+        Text, // TODO: change Object to output key type
+        IntWritable> { // TODO: change Object to output value type
 
     @Override
-    protected void map(Object key, // TODO: change Object to input key type
-                       Object value, // TODO: change Object to input value type
+    protected void map(LongWritable key, // TODO: change Object to input key type
+                       Text value, // TODO: change Object to input value type
                        Context context) throws IOException, InterruptedException {
 
         // TODO: implement the map method (use context.write to emit results)
+        String line = value.toString();
+        String[] words = line.split("\\s+");
+        for (String word : words) {
+            valuValue.set(word);
+            context.write(Value, ONE);
+        }
+        context.
     }
 
 }
 
-class WCReducer extends Reducer<Object, // TODO: change Object to input key type
-        Object, // TODO: change Object to input value type
-        Object, // TODO: change Object to output key type
-        Object> { // TODO: change Object to output value type
+class WCReducer extends Reducer<Text, // TODO: change Object to input key type
+        IntWritable, // TODO: change Object to input value type
+        Text, // TODO: change Object to output key type
+        IntWritable> { // TODO: change Object to output value type
 
     @Override
     protected void reduce(Object key, // TODO: change Object to input key type
@@ -85,5 +111,6 @@ class WCReducer extends Reducer<Object, // TODO: change Object to input key type
                           Context context) throws IOException, InterruptedException {
 
         // TODO: implement the reduce method (use context.write to emit results)
+
     }
 }
