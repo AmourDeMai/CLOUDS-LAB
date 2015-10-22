@@ -1,22 +1,24 @@
 package fr.eurecom.dsg.mapreduce;
 
+
+import java.io.IOException;
+import java.util.Iterator;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.TextInputFormat;
-import org.apache.hadoop.mapred.TextOutputFormat;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.hadoop.io.Text;
-
-import java.io.IOException;
 
 /**
  * Word Count example of MapReduce job. Given a plain text in input, this job
@@ -82,6 +84,8 @@ class WCMapper extends Mapper<LongWritable, // TODO: change Object to input key 
         Text, // TODO: change Object to input value type
         Text, // TODO: change Object to output key type
         IntWritable> { // TODO: change Object to output value type
+    private IntWritable ONE = new IntWritable(1);
+    private Text textValue = new Text();
 
     @Override
     protected void map(LongWritable key, // TODO: change Object to input key type
@@ -92,10 +96,9 @@ class WCMapper extends Mapper<LongWritable, // TODO: change Object to input key 
         String line = value.toString();
         String[] words = line.split("\\s+");
         for (String word : words) {
-            valuValue.set(word);
-            context.write(Value, ONE);
+            textValue.set(word);
+            context.write(textValue, ONE);
         }
-        context.
     }
 
 }
@@ -105,12 +108,20 @@ class WCReducer extends Reducer<Text, // TODO: change Object to input key type
         Text, // TODO: change Object to output key type
         IntWritable> { // TODO: change Object to output value type
 
+    private IntWritable writableSum = new IntWritable();
+
     @Override
-    protected void reduce(Object key, // TODO: change Object to input key type
-                          Iterable<Object> values, // TODO: change Object to input value type
+    protected void reduce(Text key, // TODO: change Object to input key type
+                          Iterable<IntWritable> values, // TODO: change Object to input value type
                           Context context) throws IOException, InterruptedException {
 
         // TODO: implement the reduce method (use context.write to emit results)
+        int sum = 0;
+        for (IntWritable value : values) {
+            sum += value.get();
+        }
 
+        writableSum.set(sum);
+        context.write(key, writableSum);
     }
 }
