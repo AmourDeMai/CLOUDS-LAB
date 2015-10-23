@@ -36,35 +36,37 @@ public class WordCountCombiner extends Configured implements Tool {
     private Path outputDir;
 
   @Override
-	public int run(String[] args) throws Exception {
-    
-		Job job = null; // TODO: define new job instead of null using conf e setting a name
-		Configuration conf = this.getConf();
-		// TODO: set job input format
-        job.setInputFormatClass(TextInputFormat.class);
-		// TODO: set map class and the map output key and value classes
-		job.setMapperClass(WCMapperCombiner.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
-		// * TODO: set the combiner class and the combiner output key and value classes
-        job.setCombinerClass(WCReducerCombiner.class);
-		// TODO: set reduce class and the reduce output key and value classes
-        job.setReducerClass(WCReducerCombiner.class);
-        job.setOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
-		// TODO: set job output format
-        job.setOutputFormatClass(TextOutputFormat.class);
-		// TODO: add the input file as job input (from HDFS)
-        FileInputFormat.addInputPath(job, inputPath);
-        // TODO: set the output path for the job results (to HDFS)
-        FileOutputFormat.setOutputPath(job, outputDir);
-        // TODO: set the number of reducers. This is optional and by default is 1
-        job.setNumReduceTasks(numReducers);
-        // TODO: set the jar class
-        job.setJarByClass(WordCountCombiner.class);
+  public int run(String[] args) throws Exception {
+    // TODO: define new job instead of null using conf e setting
+    Job job = null;
+    // TODO: a nameConfiguration
+    Configuration conf = this.getConf();
+    job = new Job(conf, "Word Count Combiner");
+    // TODO: set job input format
+    job.setInputFormatClass(TextInputFormat.class);
+    // TODO: set map class and the map output key and value classes
+    job.setMapperClass(WCMapperCombiner.class);
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(IntWritable.class);
+    // * TODO: set the combiner class and the combiner output key and value classes
+    job.setCombinerClass(WCReducerCombiner.class);
+    // TODO: set reduce class and the reduce output key and value classes
+    job.setReducerClass(WCReducerCombiner.class);
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(IntWritable.class);
+    // TODO: set job output format
+    job.setOutputFormatClass(TextOutputFormat.class);
+    // TODO: add the input file as job input (from HDFS)
+    FileInputFormat.addInputPath(job, inputPath);
+    // TODO: set the output path for the job results (to HDFS)
+    FileOutputFormat.setOutputPath(job, outputDir);
+    // TODO: set the number of reducers. This is optional and by default is 1
+    job.setNumReduceTasks(numReducers);
+    // TODO: set the jar class
+    job.setJarByClass(WordCountIMC.class);
 
-		return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
-	}
+    return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
+  }
 	
   public WordCountCombiner (String[] args) {
     if (args.length != 3) {
