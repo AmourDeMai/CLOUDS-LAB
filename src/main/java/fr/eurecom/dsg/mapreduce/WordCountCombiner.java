@@ -63,7 +63,7 @@ public class WordCountCombiner extends Configured implements Tool {
     // TODO: set the number of reducers. This is optional and by default is 1
     job.setNumReduceTasks(numReducers);
     // TODO: set the jar class
-    job.setJarByClass(WordCountIMC.class);
+    job.setJarByClass(WordCountCombiner.class);
 
     return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
   }
