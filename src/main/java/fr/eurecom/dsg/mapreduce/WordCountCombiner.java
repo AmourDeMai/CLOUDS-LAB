@@ -1,9 +1,7 @@
 package fr.eurecom.dsg.mapreduce;
 
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -21,7 +19,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-
 
 /**
  * Word Count example of MapReduce job. Given a plain text in input, this job
@@ -47,7 +44,7 @@ public class WordCountCombiner extends Configured implements Tool {
     // TODO: set map class and the map output key and value classes
     job.setMapperClass(WCMapperCombiner.class);
     job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(IntWritable.class);
+    job.setMapOutputValueClass(LongWritable.class);
     // * TODO: set the combiner class and the combiner output key and value classes
     job.setCombinerClass(WCReducerCombiner.class);
     // TODO: set reduce class and the reduce output key and value classes
