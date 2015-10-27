@@ -1,22 +1,22 @@
 package fr.eurecom.dsg.mapreduce;
 
-        import java.io.IOException;
+import java.io.IOException;
 
-        import org.apache.hadoop.conf.Configuration;
-        import org.apache.hadoop.conf.Configured;
-        import org.apache.hadoop.fs.Path;
-        import org.apache.hadoop.io.IntWritable;
-        import org.apache.hadoop.io.LongWritable;
-        import org.apache.hadoop.io.Text;
-        import org.apache.hadoop.mapreduce.Job;
-        import org.apache.hadoop.mapreduce.Mapper;
-        import org.apache.hadoop.mapreduce.Reducer;
-        import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-        import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-        import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-        import org.apache.hadoop.util.Tool;
-        import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 public class WordCount extends Configured implements Tool {
 
@@ -30,9 +30,10 @@ public class WordCount extends Configured implements Tool {
                 throws IOException, InterruptedException {
             String line = value.toString();
             String[] words = line.split("\\s+");
-            for(String word : words) {
+            for (String word : words) {
                 textValue.set(word);
-                context.write(textValue, ONE);}
+                context.write(textValue, ONE);
+            }
         }
     }
 
@@ -48,7 +49,7 @@ public class WordCount extends Configured implements Tool {
                 sum += value.get();
 
             writableSum.set(sum);
-            context.write(key,writableSum);
+            context.write(key, writableSum);
         }
     }
 
@@ -57,7 +58,7 @@ public class WordCount extends Configured implements Tool {
 
         Configuration conf = this.getConf();
 
-        Job job = new Job(conf,"Word Count");
+        Job job = new Job(conf, "Word Count");
 
         job.setInputFormatClass(TextInputFormat.class);
 
@@ -114,7 +115,6 @@ import org.apache.hadoop.util.ToolRunner;
  * Word Count example of MapReduce job. Given a plain text in input, this job
  * counts how many occurrences of each word there are in that text and writes
  * the result on HDFS.
- *
  */
 /*
 public class WordCount extends Configured implements Tool {
