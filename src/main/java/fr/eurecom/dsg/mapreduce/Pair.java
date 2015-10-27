@@ -62,11 +62,11 @@ public class Pair extends Configured implements Tool {
             int sum = 0;
             for (IntWritable value : values) {
                 sum += value.get();
-
-                writableSum.set(sum);
-                context.write(key, writableSum);
             }
+            writableSum.set(sum);
+            context.write(key, writableSum);
         }
+
     }
 
     private int numReducers;
