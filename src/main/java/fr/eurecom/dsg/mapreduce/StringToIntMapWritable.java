@@ -34,12 +34,18 @@ public class StringToIntMapWritable implements Writable {
   public void readFields(DataInput in) throws IOException {
     
     // TODO: implement deserialization
-    Text text = new Text();
-    IntWritable intWritable = new IntWritable();
+    while (true){
+      Text text = new Text();
+      IntWritable intWritable = new IntWritable();
+      text.readFields(in);
+      intWritable.readFields(in);
 
-    text.readFields(in);
-    intWritable.readFields(in);
-    hashMap.put(text, intWritable);
+      if (text.toString() != null && intWritable.toString() != null) {
+        hashMap.put(text, intWritable);
+      } else {
+        break;
+      }
+    }
     // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
     // StringToIntMapWritable when reading new records. Remember to initialize your variables 
     // inside this function, in order to get rid of old data.
@@ -53,7 +59,7 @@ public class StringToIntMapWritable implements Writable {
     Set<Text> keys = hashMap.keySet();
     Iterator iterator = keys.iterator();
 
-    if (iterator.hasNext()) {
+    while (iterator.hasNext()) {
       // write key
       Text text = (Text) iterator.next();
       text.write(out);
@@ -63,5 +69,22 @@ public class StringToIntMapWritable implements Writable {
     }
   }
 
+  public HashMap<Text, IntWritable> getHashMap() {
+    return hashMap;
+  }
 
+  public void setHashMap(HashMap<Text, IntWritable> hashMap) {
+    this.hashMap = hashMap;
+  }
+
+  public String toString() {
+    String result = new String();
+    Iterator iterator = hashMap.keySet().iterator();
+    while (iterator.hasNext()) {
+      Text text = (Text)iterator.next();
+      IntWritable intWritable = hashMap.get(iterator.next());
+      result += text.toString() + " : " + intWritable.toString();
+    }
+    return result;
+  }
 }

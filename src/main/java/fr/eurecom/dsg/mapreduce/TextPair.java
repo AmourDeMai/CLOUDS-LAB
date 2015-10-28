@@ -97,7 +97,7 @@ public class TextPair implements WritableComparable<TextPair> {
     @Override
     public String toString() {
         // TODO: implement toString for text output format
-        return this.first.toString() + " : " + this.second.toString();
+        return this.first.toString() + " , " + this.second.toString();
     }
 
 
