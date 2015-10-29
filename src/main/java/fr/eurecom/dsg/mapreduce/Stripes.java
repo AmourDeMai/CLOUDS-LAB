@@ -85,25 +85,23 @@ class StripesMapper
             throws IOException, InterruptedException {
 
         // TODO: implement map method
-        IntWritable ONE = new IntWritable(1);
         String line = value.toString();
         String[] words = line.split("\\s+");
 
-        for (String firstWord : words) {
+        for (String first : words) {
             StringToIntMapWritable stripe = new StringToIntMapWritable();
-            for (int i = 0; i < words.length; i++) {
-                if (firstWord != words[i]) {
-                    Text secondWord = new Text(words[i]);
-                    if (stripe.getHashMap().containsKey(secondWord)) {
-                        int count = stripe.getHashMap().get(secondWord).get();
+            for (String second : words) {
+                if (first != second) {
+                    if (stripe.containsKey(second)) {
+                        int count = stripe.getOneCountWithStringKey(second);
                         count++;
-                        stripe.getHashMap().put(secondWord, new IntWritable(count));
+                        stripe.add(second, count);
                     } else {
-                        stripe.getHashMap().put(secondWord, ONE);
+                        stripe.add(second, 1);
                     }
                 }
             }
-            context.write(new Text(firstWord), stripe);
+            context.write(new Text(first), stripe);
         }
 
     }
