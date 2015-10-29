@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.apache.hadoop.io.Text;
-
-
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Writable;
 /*
@@ -19,14 +16,20 @@ public class StringToIntMapWritable implements Writable {
   
   // TODO: add an internal field that is the real associative array
   private HashMap<Text, IntWritable> hashMap;
+  private Text word;
+  private IntWritable count;
 
   public StringToIntMapWritable() {
     hashMap = new HashMap<Text, IntWritable>();
+    word = new Text();
+    count = new IntWritable();
   }
 
   public StringToIntMapWritable(Text text, IntWritable intWritable) {
     this();
-    hashMap.put(text, intWritable);
+    this.word = text;
+    this.count = intWritable;
+    hashMap.put(this.word, this.count);
   }
 
 
@@ -34,17 +37,16 @@ public class StringToIntMapWritable implements Writable {
   public void readFields(DataInput in) throws IOException {
     
     // TODO: implement deserialization
-    while (true){
-      Text text = new Text();
-      IntWritable intWritable = new IntWritable();
-      text.readFields(in);
-      intWritable.readFields(in);
+    IntWritable sizeWritable = new IntWritable();
+    sizeWritable.readFields(in);
+    int size = sizeWritable.get();
 
-      if (text.toString() != null && intWritable.toString() != null) {
-        hashMap.put(text, intWritable);
-      } else {
-        break;
-      }
+    for (int i = 0; i < size; i++) {
+      word = new Text();
+      word.readFields(in);  // read the size of word from in
+      count = new IntWritable();
+      count.readFields(in);
+      hashMap.put(word, count);
     }
     // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
     // StringToIntMapWritable when reading new records. Remember to initialize your variables 
@@ -56,16 +58,19 @@ public class StringToIntMapWritable implements Writable {
   public void write(DataOutput out) throws IOException {
 
     // TODO: implement serialization
+    int size = hashMap.size();
+    IntWritable sizeWritable = new IntWritable(size);
+    sizeWritable.write(out);
+
     Set<Text> keys = hashMap.keySet();
     Iterator iterator = keys.iterator();
-
     while (iterator.hasNext()) {
-      // write key
-      Text text = (Text) iterator.next();
-      text.write(out);
+      // write key, write method only write the size of the object bits, here is the size of word
+      word = (Text) iterator.next();
+      word.write(out);
       // write value
-      IntWritable intWritable = hashMap.get(iterator.next());
-      intWritable.write(out);
+      count = hashMap.get(word);
+      count.write(out);
     }
   }
 

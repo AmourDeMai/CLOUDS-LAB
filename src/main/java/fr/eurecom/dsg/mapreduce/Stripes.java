@@ -90,7 +90,6 @@ class StripesMapper
         String[] words = line.split("\\s+");
 
         for (String firstWord : words) {
-            //LinkedList<StringToIntMapWritable> associativeArray = new LinkedList<StringToIntMapWritable>();
             StringToIntMapWritable stripe = new StringToIntMapWritable();
             for (int i = 0; i < words.length; i++) {
                 if (firstWord != words[i]) {
@@ -133,7 +132,7 @@ class StripesReducer
                 if (hashMap.containsKey(keyInner)) {
                     int sum = hashMap.get(keyInner).get();
                     sum += valueHashMap.get(keyInner).get();
-                    hashMap.remove(keyInner);
+                    //hashMap.remove(keyInner);
                     hashMap.put(keyInner, new IntWritable(sum));
                 } else {
                     hashMap.put(keyInner, valueHashMap.get(keyInner));
