@@ -97,7 +97,7 @@ class StripesMapper
                         count++;
                         stripe.add(second, count);
                     } else {
-                        stripe.add(second, 1);
+                        stripe.add(second, (int)1);
                     }
                 }
             }

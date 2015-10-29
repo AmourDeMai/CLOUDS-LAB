@@ -104,9 +104,9 @@ public class StringToIntMapWritable implements Writable {
     String result = new String();
     Iterator iterator = hashMap.keySet().iterator();
     while (iterator.hasNext()) {
-      Text text = (Text)iterator.next();
-      IntWritable intWritable = hashMap.get(iterator.next());
-      result += text.toString() + " : " + intWritable.toString();
+      word = (Text)iterator.next();
+      count = hashMap.get(iterator.next());
+      result += word.toString() + " : " + count.toString();
     }
     return result;
   }
