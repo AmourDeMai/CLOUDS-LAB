@@ -118,26 +118,34 @@ class StripesReducer
                        Context context) throws IOException, InterruptedException {
 
         // TODO: implement the reduce method
+        // the value to send in the end
         StringToIntMapWritable stripe = new StringToIntMapWritable();
         HashMap<Text, IntWritable> hashMap = stripe.getHashMap();
 
         for (StringToIntMapWritable value : values) {
             // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
-            HashMap<Text, IntWritable> valueHashMap = value.getHashMap();
-            Iterator iterator = valueHashMap.keySet().iterator();
-            while (iterator.hasNext()) {
-                Text keyInner = (Text) iterator.next();
-                if (hashMap.containsKey(keyInner)) {
-                    int sum = hashMap.get(keyInner).get();
-                    sum += valueHashMap.get(keyInner).get();
-                    //hashMap.remove(keyInner);
-                    hashMap.put(keyInner, new IntWritable(sum));
+            addValue(hashMap, value.getHashMap());
+        }
+        stripe.setHashMap(hashMap);
+        context.write(key, stripe);
+    }
+
+    private void addValue(HashMap<Text, IntWritable> hashMap, HashMap<Text, IntWritable> valueHashMap) {
+        Iterator iterator = (Iterator) hashMap.keySet();
+        Iterator iteratorValue = (Iterator) valueHashMap.keySet();
+        while (iterator.hasNext()) {
+            Text key = (Text) iterator.next();
+            int sum = 0;
+            while (iteratorValue.hasNext()) {
+                Text keyValue = (Text)iteratorValue.next();
+                if (key == keyValue) {
+                    int count = valueHashMap.get(keyValue).get();
+                    sum += count;
+                    hashMap.put(key, new IntWritable(sum));
                 } else {
-                    hashMap.put(keyInner, valueHashMap.get(keyInner));
+                    hashMap.put(keyValue, new IntWritable((int)1));
                 }
             }
-            stripe.setHashMap(hashMap);
-            context.write(key, stripe);
         }
     }
 }
