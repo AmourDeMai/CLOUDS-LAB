@@ -124,21 +124,8 @@ class StripesReducer
 
         for (StringToIntMapWritable value : values) {
             // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
-            addValue(hashMap, value.getHashMap());
+            stripe.addStripe(value);
         }
-        stripe.setHashMap(hashMap);
         context.write(key, stripe);
-    }
-
-    private void addValue(HashMap<Text, IntWritable> hashMap, HashMap<Text, IntWritable> valueHashMap) {
-        Iterator valueIterator = (Iterator) valueHashMap.keySet();
-        while (valueIterator.hasNext()) {
-            Text word = (Text) valueIterator.next();
-            if (hashMap.containsKey(word)) {
-              hashMap.put(word, new IntWritable(valueHashMap.get(word).get() + 1));
-            } else {
-                hashMap.put(word, valueHashMap.get(word));
-            }
-        }
     }
 }
