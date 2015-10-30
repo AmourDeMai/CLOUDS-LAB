@@ -59,7 +59,6 @@ public class OrderInversion extends Configured implements Tool {
 
             // TODO: implement the map method
             String line = value.toString();
-            line.replaceAll("^\\s+", "");
             String[] words = line.split("\\s+");
 
             for (String firstWord : words) {
@@ -118,6 +117,7 @@ public class OrderInversion extends Configured implements Tool {
         job.setReducerClass(PairReducer.class);
         job.setOutputKeyClass(DoubleWritable.class);
         job.setOutputValueClass(DoubleWritable.class);
+        job.setPartitionerClass(PartitionerTextPair.class);
         // TODO: set job output format
         job.setOutputFormatClass(TextOutputFormat.class);
         // TODO: add the input file as job input (from HDFS) to the variable inputFile
