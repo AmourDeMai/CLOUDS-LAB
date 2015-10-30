@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="05d59ada-3cd7-4c26-9a9f-8ed545f37173" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/StringToIntMapWritable.java" afterPath="$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/StringToIntMapWritable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/Stripes.java" afterPath="$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/Stripes.java" />
     </list>
     <ignored path="labs.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,14 +40,14 @@
       <file leaf-file-name="StringToIntMapWritable.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/StringToIntMapWritable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.8661137">
-              <caret line="10" column="2" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
+            <state vertical-scroll-proportion="0.43127963">
+              <caret line="85" column="83" selection-start-line="85" selection-start-column="83" selection-end-line="85" selection-end-column="83" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2027#2028#0" expanded="true" />
                 <element signature="e#2090#2091#0" expanded="true" />
-                <element signature="e#2735#2736#0" expanded="true" />
-                <element signature="e#2786#2787#0" expanded="true" />
+                <element signature="e#2736#2737#0" expanded="true" />
+                <element signature="e#2787#2788#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -552,8 +551,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#2027#2028#0" expanded="true" />
             <element signature="e#2090#2091#0" expanded="true" />
-            <element signature="e#2735#2736#0" expanded="true" />
-            <element signature="e#2786#2787#0" expanded="true" />
+            <element signature="e#2736#2737#0" expanded="true" />
+            <element signature="e#2787#2788#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -628,8 +627,8 @@
             <element signature="imports" expanded="true" />
             <element signature="e#2027#2028#0" expanded="true" />
             <element signature="e#2090#2091#0" expanded="true" />
-            <element signature="e#2735#2736#0" expanded="true" />
-            <element signature="e#2786#2787#0" expanded="true" />
+            <element signature="e#2736#2737#0" expanded="true" />
+            <element signature="e#2787#2788#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -932,14 +931,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/eurecom/dsg/mapreduce/StringToIntMapWritable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.8661137">
-          <caret line="10" column="2" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="2" />
+        <state vertical-scroll-proportion="0.43127963">
+          <caret line="85" column="83" selection-start-line="85" selection-start-column="83" selection-end-line="85" selection-end-column="83" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2027#2028#0" expanded="true" />
             <element signature="e#2090#2091#0" expanded="true" />
-            <element signature="e#2735#2736#0" expanded="true" />
-            <element signature="e#2786#2787#0" expanded="true" />
+            <element signature="e#2736#2737#0" expanded="true" />
+            <element signature="e#2787#2788#0" expanded="true" />
           </folding>
         </state>
       </provider>

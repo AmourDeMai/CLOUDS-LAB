@@ -83,7 +83,7 @@ public class StringToIntMapWritable implements Writable {
     while (iterator.hasNext()) {
       Text word = (Text)iterator.next();
       if (hashMap.containsKey(word)) {
-        hashMap.put(word, new IntWritable(stripe.getHashMap().get(word).get() + 1);
+        hashMap.put(word, new IntWritable(stripe.getHashMap().get(word).get() + 1));
       } else {
         hashMap.put(word, stripe.hashMap.get(word));
       }
