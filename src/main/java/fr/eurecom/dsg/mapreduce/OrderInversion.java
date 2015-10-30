@@ -59,6 +59,7 @@ public class OrderInversion extends Configured implements Tool {
 
             // TODO: implement the map method
             String line = value.toString();
+            line.replaceAll("^\\s+", "");
             String[] words = line.split("\\s+");
 
             for (String firstWord : words) {

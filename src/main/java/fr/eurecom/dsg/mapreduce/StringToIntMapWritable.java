@@ -35,30 +35,24 @@ public class StringToIntMapWritable implements Writable {
   public void readFields(DataInput in) throws IOException {
     
     // TODO: implement deserialization
-    IntWritable sizeWritable = new IntWritable();
-    sizeWritable.readFields(in);
-    int size = sizeWritable.get();
+    // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
+    // StringToIntMapWritable when reading new records. Remember to initialize your variables
+    // inside this function, in order to get rid of old data.
 
+    hashMap.clear();
+    int size = in.readInt();
     for (int i = 0; i < size; i++) {
-      word = new Text();
       word.readFields(in);  // read the size of word from in
-      count = new IntWritable();
       count.readFields(in);
       hashMap.put(word, count);
     }
-    // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
-    // StringToIntMapWritable when reading new records. Remember to initialize your variables 
-    // inside this function, in order to get rid of old data.
-
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
 
     // TODO: implement serialization
-    int size = hashMap.size();
-    IntWritable sizeWritable = new IntWritable(size);
-    sizeWritable.write(out);
+    out.writeInt(hashMap.size());
     Set<Text> keys = hashMap.keySet();
     Iterator iterator = keys.iterator();
     while (iterator.hasNext()) {
