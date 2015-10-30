@@ -93,7 +93,7 @@ class StripesMapper
             for (String second : words) {
                 if (first != second) {
                     if (stripe.containsKey(second)) {
-                        int count = stripe.getOneCountWithStringKey(second);
+                        int count = stripe.getValueWithStringKey(second);
                         count++;
                         stripe.add(second, count);
                     } else {
@@ -131,20 +131,13 @@ class StripesReducer
     }
 
     private void addValue(HashMap<Text, IntWritable> hashMap, HashMap<Text, IntWritable> valueHashMap) {
-        Iterator iterator = (Iterator) hashMap.keySet();
-        Iterator iteratorValue = (Iterator) valueHashMap.keySet();
-        while (iterator.hasNext()) {
-            Text key = (Text) iterator.next();
-            int sum = 0;
-            while (iteratorValue.hasNext()) {
-                Text keyValue = (Text)iteratorValue.next();
-                if (key == keyValue) {
-                    int count = valueHashMap.get(keyValue).get();
-                    sum += count;
-                    hashMap.put(key, new IntWritable(sum));
-                } else {
-                    hashMap.put(keyValue, new IntWritable((int)1));
-                }
+        Iterator valueIterator = (Iterator) valueHashMap.keySet();
+        while (valueIterator.hasNext()) {
+            Text word = (Text) valueIterator.next();
+            if (hashMap.containsKey(word)) {
+              hashMap.put(word, new IntWritable(valueHashMap.get(word).get() + 1));
+            } else {
+                hashMap.put(word, valueHashMap.get(word));
             }
         }
     }

@@ -73,12 +73,10 @@ public class StringToIntMapWritable implements Writable {
   }
 
   public void add(String second, int count) {
-    Text secondText = new Text(second);
-    IntWritable countWritable = new IntWritable(count);
-    hashMap.put(secondText, countWritable);
+    hashMap.put(new Text(second), new IntWritable(count));
   }
 
-  public int getOneCountWithStringKey(String key) {
+  public int getValueWithStringKey(String key) {
     if (containsKey(key)) {
       Text textKey = new Text(key);
       return hashMap.get(textKey).get();
@@ -88,8 +86,7 @@ public class StringToIntMapWritable implements Writable {
   }
 
   public boolean containsKey (String key) {
-    Text keyText = new Text(key);
-    return hashMap.containsKey(keyText);
+    return hashMap.containsKey(new Text(key));
   }
 
   public HashMap<Text, IntWritable> getHashMap() {
