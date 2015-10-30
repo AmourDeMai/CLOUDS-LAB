@@ -112,8 +112,8 @@ public class OrderInversion extends Configured implements Tool {
         job.setInputFormatClass(TextInputFormat.class);
         // TODO: set map class and the map output key and value classes
         job.setMapperClass(PairMapper.class);
-        job.setMapOutputValueClass(DoubleWritable.class);
-        job.setMapOutputKeyClass(IntWritable.class);
+        job.setMapOutputValueClass(IntWritable.class);
+        job.setMapOutputKeyClass(TextPair.class);
         // TODO: set reduce class and the reduce output key and value classes
         job.setReducerClass(PairReducer.class);
         job.setOutputKeyClass(DoubleWritable.class);

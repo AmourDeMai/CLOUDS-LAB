@@ -59,7 +59,6 @@ public class StringToIntMapWritable implements Writable {
     int size = hashMap.size();
     IntWritable sizeWritable = new IntWritable(size);
     sizeWritable.write(out);
-
     Set<Text> keys = hashMap.keySet();
     Iterator iterator = keys.iterator();
     while (iterator.hasNext()) {
