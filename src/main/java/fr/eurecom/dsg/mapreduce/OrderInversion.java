@@ -11,12 +11,15 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.eclipse.jdt.core.dom.AST;
 
+import java.io.IOException;
 
 public class OrderInversion extends Configured implements Tool {
 
@@ -29,7 +32,8 @@ public class OrderInversion extends Configured implements Tool {
                                 int numPartitions) {
             // TODO: implement getPartition such that pairs with the same first element
             //       will go to the same reducer. You can use toUnsighed as utility.
-            return 0;
+            Text word = key.getFirst();
+            return toUnsigned(word.hashCode()) % numPartitions;
         }
 
         /**
@@ -47,11 +51,26 @@ public class OrderInversion extends Configured implements Tool {
     public static class PairMapper extends
             Mapper<LongWritable, Text, TextPair, IntWritable> {
 
+        private IntWritable ONE = new IntWritable(1);
+
         @Override
         public void map(LongWritable key, Text value, Context context)
                 throws java.io.IOException, InterruptedException {
 
             // TODO: implement the map method
+            String line = value.toString();
+            String[] words = line.split("\\s+");
+
+            for (String firstWord : words) {
+                for (String secondWord : words) {
+                    if (!firstWord.equals(secondWord)) {
+                        TextPair pair = new TextPair(firstWord, secondWord);
+                        context.write(pair, ONE);
+                        pair.set(new Text(firstWord), new Text(ASTERISK));
+                        context.write(pair, ONE);
+                    }
+                }
+            }
         }
     }
 
@@ -59,6 +78,24 @@ public class OrderInversion extends Configured implements Tool {
             Reducer<TextPair, IntWritable, TextPair, DoubleWritable> {
 
         // TODO: implement the reduce method
+        int totalnumber = 0;
+
+        protected void reduce(TextPair key, Iterable<IntWritable> values, Context context)
+                throws IOException, InterruptedException {
+            if (key.getSecond().equals(new Text(ASTERISK))) {
+                totalnumber = 0;
+                for (IntWritable value : values) {
+                    totalnumber += value.get();
+                }
+                context.write(key, new DoubleWritable(totalnumber));
+            } else {
+                int count = 0;
+                for (IntWritable value : values) {
+                    count += value.get();
+                }
+                context.write(key, new DoubleWritable(count / totalnumber));
+            }
+        }
     }
 
     private int numReducers;
@@ -70,15 +107,27 @@ public class OrderInversion extends Configured implements Tool {
         Configuration conf = this.getConf();
 
         Job job = null;  // TODO: define new job instead of null using conf e setting a name
-
+        job = new Job(conf, "Order Inversion");
         // TODO: set job input format
+        job.setInputFormatClass(TextInputFormat.class);
         // TODO: set map class and the map output key and value classes
+        job.setMapperClass(PairMapper.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
+        job.setMapOutputKeyClass(IntWritable.class);
         // TODO: set reduce class and the reduce output key and value classes
+        job.setReducerClass(PairReducer.class);
+        job.setOutputKeyClass(DoubleWritable.class);
+        job.setOutputValueClass(DoubleWritable.class);
         // TODO: set job output format
+        job.setOutputFormatClass(TextOutputFormat.class);
         // TODO: add the input file as job input (from HDFS) to the variable inputFile
+        FileInputFormat.addInputPath(job, new Path(args[1]));
         // TODO: set the output path for the job results (to HDFS) to the variable outputPath
+        FileOutputFormat.setOutputPath(job, new Path(args[2]));
         // TODO: set the number of reducers using variable numberReducers
+        job.setNumReduceTasks(Integer.parseInt(args[0]));
         // TODO: set the jar class
+        job.setJarByClass(Pair.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

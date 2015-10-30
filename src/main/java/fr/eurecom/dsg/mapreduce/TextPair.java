@@ -87,9 +87,9 @@ public class TextPair implements WritableComparable<TextPair> {
     @Override
     public int compareTo(TextPair tp) {
         // TODO: implement the comparison between this and tp
-        int result = tp.first.compareTo(this.first);
+        int result = this.first.compareTo(tp.first);
         if (result == 0) {
-            result = tp.second.compareTo(this.second);
+            result = this.second.compareTo(tp.second);
         }
         return result;
     }
