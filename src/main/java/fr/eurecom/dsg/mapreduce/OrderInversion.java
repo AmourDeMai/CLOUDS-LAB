@@ -92,7 +92,7 @@ public class OrderInversion extends Configured implements Tool {
                 for (IntWritable value : values) {
                     count += value.get();
                 }
-                context.write(key, new DoubleWritable(count /  totalnumber));
+                context.write(key, new DoubleWritable((double)count /  (double)totalnumber));
             }
         }
     }
