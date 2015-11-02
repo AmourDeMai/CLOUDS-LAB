@@ -46,9 +46,9 @@ public class Stripes extends Configured implements Tool {
         // TODO: set job output format
         job.setOutputFormatClass(TextOutputFormat.class);
         // TODO: add the input file as job input (from HDFS) to the variable inputFile
-        FileInputFormat.addInputPath(job, new Path(args[1]));
+        FileInputFormat.addInputPath(job, this.inputPath);
         // TODO: set the output path for the job results (to HDFS) to the variable outputPath
-        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+        FileOutputFormat.setOutputPath(job, this.outputDir);
         // TODO: set the number of reducers using variable numberReducers
         job.setNumReduceTasks(Integer.parseInt(args[0]));
         // TODO: set the jar class
@@ -87,9 +87,10 @@ class StripesMapper
         // TODO: implement map method
         String line = value.toString();
         String[] words = line.split("\\s+");
+        StringToIntMapWritable stripe = new StringToIntMapWritable();
 
         for (String first : words) {
-            StringToIntMapWritable stripe = new StringToIntMapWritable();
+            stripe.getHashMap().clear();
             for (String second : words) {
                 if (first != second) {
                     if (stripe.containsKey(second)) {

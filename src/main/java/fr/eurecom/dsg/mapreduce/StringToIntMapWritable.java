@@ -71,8 +71,7 @@ public class StringToIntMapWritable implements Writable {
 
   public int getValueWithStringKey(String key) {
     if (containsKey(key)) {
-      Text textKey = new Text(key);
-      return hashMap.get(textKey).get();
+      return hashMap.get(new Text(key)).get();
     } else {
       return 0;
     }
@@ -82,10 +81,10 @@ public class StringToIntMapWritable implements Writable {
     Iterator iterator = stripe.getHashMap().keySet().iterator();
     while (iterator.hasNext()) {
       Text word = (Text)iterator.next();
-      if (hashMap.containsKey(word)) {
-        hashMap.put(word, new IntWritable(stripe.getHashMap().get(word).get() + 1));
+      if (this.hashMap.containsKey(word)) {
+        this.hashMap.put(word, new IntWritable(this.hashMap.get(word).get() + stripe.hashMap.get(word).get()));
       } else {
-        hashMap.put(word, stripe.hashMap.get(word));
+        this.hashMap.put(word, stripe.hashMap.get(word));
       }
     }
   }
@@ -103,13 +102,13 @@ public class StringToIntMapWritable implements Writable {
   }
 
   public String toString() {
-    String result = new String();
+    String result = " : {";
     Iterator iterator = hashMap.keySet().iterator();
     while (iterator.hasNext()) {
       word = (Text)iterator.next();
       count = hashMap.get(iterator.next());
       result += word.toString() + " : " + count.toString();
     }
-    return result;
+    return result + " }";
   }
 }
