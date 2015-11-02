@@ -78,6 +78,55 @@ class StripesMapper
         Text,   // TODO: change Object to output key type
         StringToIntMapWritable> { // TODO: change Object to output value type
 
+    StringToIntMapWritable stripe = new StringToIntMapWritable();
+    @Override
+    public void map(LongWritable key, // TODO: change Object to input key type
+                    Text value, // TODO: change Object to input value type
+                    Context context)
+            throws IOException, InterruptedException {
+        // TODO: implement map method
+        String line = value.toString();
+        String[] words = line.split("\\s+");
+        for (String first : words) {
+            stripe.clear();
+            for (String second : words) {
+                if (!first.equals(second)) {
+                    stripe.add(second);
+                }
+            }
+            context.write(new Text(first), stripe);
+        }
+    }
+}
+
+class StripesReducer
+        extends Reducer<Text,   // TODO: change Object to input key type
+        StringToIntMapWritable,   // TODO: change Object to input value type
+        Text,   // TODO: change Object to output key type
+        StringToIntMapWritable> { // TODO: change Object to output value type
+    @Override
+    public void reduce(Text key, // TODO: change Object to input key type
+                       Iterable<StringToIntMapWritable> values, // TODO: change Object to input value type
+                       Context context) throws IOException, InterruptedException {
+
+        // TODO: implement the reduce method
+        StringToIntMapWritable stripeFinal = new StringToIntMapWritable();
+
+        for (StringToIntMapWritable value : values) {
+            // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
+            stripeFinal.addStripe(value);
+        }
+        context.write(key, stripeFinal);
+    }
+}
+
+/*
+class StripesMapper
+        extends Mapper<LongWritable,   // TODO: change Object to input key type
+        Text,   // TODO: change Object to input value type
+        Text,   // TODO: change Object to output key type
+        StringToIntMapWritable> { // TODO: change Object to output value type
+
     @Override
     public void map(LongWritable key, // TODO: change Object to input key type
                     Text value, // TODO: change Object to input value type
@@ -130,3 +179,4 @@ class StripesReducer
         context.write(key, stripe);
     }
 }
+*/

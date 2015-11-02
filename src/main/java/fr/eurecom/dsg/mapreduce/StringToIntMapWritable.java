@@ -5,15 +5,107 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Writable;
+
+/*
+ * Very simple (and scholastic) implementation of a Writable associative array for String to Int
+ *
+ **/
+public class StringToIntMapWritable implements Writable {
+
+  // TODO: add an internal field that is the real associative array
+  private HashMap<String, Integer> hashMap;
+  private Text word;
+  private IntWritable count;
+
+  public StringToIntMapWritable() {
+    hashMap = new HashMap<String, Integer>();
+  }
+  @Override
+  public void readFields(DataInput in) throws IOException {
+
+    // TODO: implement deserialization
+    hashMap.clear();
+    int size = in.readInt();
+    for (int i = 0; i < size; i++) {
+      word.readFields(in);
+      count.readFields(in);
+      hashMap.put(word.toString(), count.get());
+    }
+    // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
+    // StringToIntMapWritable when reading new records. Remember to initialize your variables
+    // inside this function, in order to get rid of old data.
+
+  }
+
+  @Override
+  public void write(DataOutput out) throws IOException {
+
+    // TODO: implement serialization
+    out.writeInt(hashMap.size());
+    Iterator iterator = hashMap.keySet().iterator();
+    while (iterator.hasNext()) {
+      word.set((String) iterator.next());
+      count.set(hashMap.get(iterator.next()));
+      word.write(out);
+      count.write(out);
+    }
+  }
+
+  public void clear() {
+    hashMap.clear();
+  }
+
+  public void add(String word) {
+    if (hashMap.containsKey(word)) {
+      hashMap.put(word, hashMap.get(word) + 1);
+    } else {
+      hashMap.put(word, 1);
+    }
+  }
+
+  public void addStripe(StringToIntMapWritable stripe) {
+    Iterator iterator = (Iterator) stripe.hashMap.keySet();
+    while (iterator.hasNext()) {
+      String newWord = (String) iterator.next();
+      add(newWord);
+    }
+  }
+
+  public String toString() {
+    String result = " {";
+    Iterator iterator = hashMap.keySet().iterator();
+    while (iterator.hasNext()) {
+      result = iterator.next() + " : " + hashMap.get(iterator.next());
+    }
+    return result + " }";
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Very simple (and scholastic) implementation of a Writable associative array for String to Int 
  *
  **/
+/*
 public class StringToIntMapWritable implements Writable {
-  
+
   // TODO: add an internal field that is the real associative array
   private HashMap<Text, IntWritable> hashMap;
   private Text word;
@@ -33,7 +125,7 @@ public class StringToIntMapWritable implements Writable {
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    
+
     // TODO: implement deserialization
     // Warning: for efficiency reasons, Hadoop attempts to re-use old instances of
     // StringToIntMapWritable when reading new records. Remember to initialize your variables
@@ -112,3 +204,4 @@ public class StringToIntMapWritable implements Writable {
     return result + " }";
   }
 }
+*/
