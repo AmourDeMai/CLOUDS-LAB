@@ -1,14 +1,10 @@
 package fr.eurecom.dsg.mapreduce;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -21,6 +17,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+
 public class Stripes extends Configured implements Tool {
 
     private int numReducers;
@@ -31,29 +28,22 @@ public class Stripes extends Configured implements Tool {
     public int run(String[] args) throws Exception {
 
         Configuration conf = this.getConf();
-        Job job = null;  // TODO: define new job instead of null using conf e setting a name
-        job = new Job(conf, "Stripes");
-        // TODO: set job input format
-        job.setInputFormatClass(TextInputFormat.class);
-        // TODO: set map class and the map output key and value classes
-        job.setMapperClass(StripesMapper.class);
-        job.setMapOutputValueClass(Text.class);
-        job.setMapOutputKeyClass(StringToIntMapWritable.class);
+        Job job = new Job(conf, "Word Co-Occurrence Stripes Pattern");  // xTODO: define new job instead of null using conf e setting a name
+
+        job.setInputFormatClass(TextInputFormat.class);// xTODO: set job input format
+        job.setMapperClass(StripesMapper.class);// xTODO: set map class and the map output key and value classes
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(StringToIntMapWritable.class);
+        job.setReducerClass(StripesReducer.class);// xTODO: set reduce class and the reduce output key and value classes
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(StringToIntMapWritable.class);
         job.setCombinerClass(StripesReducer.class);
-        // TODO: set reduce class and the reduce output key and value classes
-        job.setReducerClass(StripesReducer.class);
-        job.setOutputValueClass(Text.class);
-        job.setOutputKeyClass(StringToIntMapWritable.class);
-        // TODO: set job output format
-        job.setOutputFormatClass(TextOutputFormat.class);
-        // TODO: add the input file as job input (from HDFS) to the variable inputFile
-        FileInputFormat.addInputPath(job, this.inputPath);
-        // TODO: set the output path for the job results (to HDFS) to the variable outputPath
-        FileOutputFormat.setOutputPath(job, this.outputDir);
-        // TODO: set the number of reducers using variable numberReducers
-        job.setNumReduceTasks(Integer.parseInt(args[0]));
-        // TODO: set the jar class
-        job.setJarByClass(Stripes.class);
+        job.setOutputFormatClass(TextOutputFormat.class);// xTODO: set job output format
+        FileInputFormat.addInputPath(job, this.inputPath);// xTODO: add the input file as job input (from HDFS) to the variable inputFile
+        FileOutputFormat.setOutputPath(job, this.outputDir);// xTODO: set the output path for the job results (to HDFS) to the variable outputPath
+        job.setNumReduceTasks(this.numReducers);// xTODO: set the number of reducers using variable numberReducers
+        job.setJarByClass(Stripes.class);// xTODO: set the jar class
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
@@ -71,113 +61,60 @@ public class Stripes extends Configured implements Tool {
         int res = ToolRunner.run(new Configuration(), new Stripes(args), args);
         System.exit(res);
     }
-}
 
-class StripesMapper
-        extends Mapper<LongWritable,   // TODO: change Object to input key type
-        Text,   // TODO: change Object to input value type
-        Text,   // TODO: change Object to output key type
-        StringToIntMapWritable> { // TODO: change Object to output value type
 
-    StringToIntMapWritable stripe = new StringToIntMapWritable();
-    @Override
-    public void map(LongWritable key, // TODO: change Object to input key type
-                    Text value, // TODO: change Object to input value type
-                    Context context)
-            throws IOException, InterruptedException {
-        // TODO: implement map method
-        String line = value.toString();
-        String[] words = line.split("\\s+");
-        for (String first : words) {
-            stripe.clear();
-            for (String second : words) {
-                if (!first.equals(second)) {
-                    stripe.add(second);
-                }
-            }
-            context.write(new Text(first), stripe);
-        }
-    }
-}
+    public static class StripesMapper
+            extends Mapper<LongWritable,   // xTODO: change Object to input key type
+            Text,   // xTODO: change Object to input value type
+            Text,   // xTODO: change Object to output key type
+            StringToIntMapWritable> { // xTODO: change Object to output value type
 
-class StripesReducer
-        extends Reducer<Text,   // TODO: change Object to input key type
-        StringToIntMapWritable,   // TODO: change Object to input value type
-        Text,   // TODO: change Object to output key type
-        StringToIntMapWritable> { // TODO: change Object to output value type
-    @Override
-    public void reduce(Text key, // TODO: change Object to input key type
-                       Iterable<StringToIntMapWritable> values, // TODO: change Object to input value type
-                       Context context) throws IOException, InterruptedException {
+        private Text first = new Text();
+        private Text second = new Text();
+        private StringToIntMapWritable count = new StringToIntMapWritable();
 
-        // TODO: implement the reduce method
-        StringToIntMapWritable stripeFinal = new StringToIntMapWritable();
+        @Override
+        public void map(LongWritable offset, // xTODO: change Object to input key type
+                        Text line, // xTODO: change Object to input value type
+                        Context context)
+                throws java.io.IOException, InterruptedException {
 
-        for (StringToIntMapWritable value : values) {
-            // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
-            stripeFinal.addStripe(value);
-        }
-        context.write(key, stripeFinal);
-    }
-}
-
-/*
-class StripesMapper
-        extends Mapper<LongWritable,   // TODO: change Object to input key type
-        Text,   // TODO: change Object to input value type
-        Text,   // TODO: change Object to output key type
-        StringToIntMapWritable> { // TODO: change Object to output value type
-
-    @Override
-    public void map(LongWritable key, // TODO: change Object to input key type
-                    Text value, // TODO: change Object to input value type
-                    Context context)
-            throws IOException, InterruptedException {
-
-        // TODO: implement map method
-        String line = value.toString();
-        String[] words = line.split("\\s+");
-        StringToIntMapWritable stripe = new StringToIntMapWritable();
-
-        for (String first : words) {
-            stripe.getHashMap().clear();
-            for (String second : words) {
-                if (first != second) {
-                    if (stripe.containsKey(second)) {
-                        int count = stripe.getValueWithStringKey(second);
-                        count++;
-                        stripe.add(second, count);
-                    } else {
-                        stripe.add(second, (int)1);
+            // xTODO: implement map method
+            count.clear();
+            String[] words = line.toString().split("\\s+");
+            for (String word1 : words) {
+                count.clear();
+                this.first.set(word1);
+                for (String word2 : words) {
+                    if (!(word2.equals(word1))) {
+                        this.second.set(word2);
+                        this.count.add(second);
                     }
                 }
+                context.write(this.first, this.count);
             }
-            context.write(new Text(first), stripe);
         }
+    }
 
+    public static class StripesReducer
+            extends Reducer<Text,   // xTODO: change Object to input key type
+            StringToIntMapWritable,   // xTODO: change Object to input value type
+            Text,   // xTODO: change Object to output key type
+            StringToIntMapWritable> { // xTODO: change Object to output value type
+
+        private StringToIntMapWritable sumStringToIntMap = new StringToIntMapWritable();
+
+        @Override
+        public void reduce(Text key, // xTODO: change Object to input key type
+                           Iterable<StringToIntMapWritable> values, // xTODO: change Object to input value type
+                           Context context) throws IOException, InterruptedException {
+
+            sumStringToIntMap.clear();
+            // xTODO: implement the reduce method
+            for(StringToIntMapWritable i : values){
+                sumStringToIntMap.merge(i);
+            }
+            context.write(key, sumStringToIntMap);
+        }
     }
 }
-
-class StripesReducer
-        extends Reducer<Text,   // TODO: change Object to input key type
-        StringToIntMapWritable,   // TODO: change Object to input value type
-        Text,   // TODO: change Object to output key type
-        StringToIntMapWritable> { // TODO: change Object to output value type
-    @Override
-    public void reduce(Text key, // TODO: change Object to input key type
-                       Iterable<StringToIntMapWritable> values, // TODO: change Object to input value type
-                       Context context) throws IOException, InterruptedException {
-
-        // TODO: implement the reduce method
-        // the value to send in the end
-        StringToIntMapWritable stripe = new StringToIntMapWritable();
-        HashMap<Text, IntWritable> hashMap = stripe.getHashMap();
-
-        for (StringToIntMapWritable value : values) {
-            // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
-            stripe.addStripe(value);
-        }
-        context.write(key, stripe);
-    }
-}
-*/
