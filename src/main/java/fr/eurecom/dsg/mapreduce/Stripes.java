@@ -102,14 +102,16 @@ class StripesReducer
         StringToIntMapWritable,   // TODO: change Object to input value type
         Text,   // TODO: change Object to output key type
         StringToIntMapWritable> { // TODO: change Object to output value type
+
+    private StringToIntMapWritable stripeFinal = new StringToIntMapWritable();
+
     @Override
     public void reduce(Text key, // TODO: change Object to input key type
                        Iterable<StringToIntMapWritable> values, // TODO: change Object to input value type
                        Context context) throws IOException, InterruptedException {
 
         // TODO: implement the reduce method
-        StringToIntMapWritable stripeFinal = new StringToIntMapWritable();
-
+        stripeFinal.clear();
         for (StringToIntMapWritable value : values) {
             // get the stripe which is a AssociativeArray, inside in associative array, there's a hashmap
             stripeFinal.addStripe(value);
