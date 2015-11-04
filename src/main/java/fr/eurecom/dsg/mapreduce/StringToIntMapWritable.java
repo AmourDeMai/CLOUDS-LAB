@@ -4,7 +4,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.IntWritable;
@@ -23,7 +22,10 @@ public class StringToIntMapWritable implements Writable {
 
   public StringToIntMapWritable() {
     hashMap = new HashMap<String, Integer>();
+    word = new Text();
+    count = new IntWritable();
   }
+
   @Override
   public void readFields(DataInput in) throws IOException {
 
@@ -45,14 +47,7 @@ public class StringToIntMapWritable implements Writable {
   public void write(DataOutput out) throws IOException {
 
     // TODO: implement serialization
-    out.writeInt(this.hashMap.size());
-    for(Map.Entry<String, Integer> entry : this.hashMap.entrySet()){
-      this.word.set(entry.getKey());
-      this.count.set(entry.getValue());
-      this.word.write(out);
-      this.count.write(out);
-    }
-    /*
+
     out.writeInt(hashMap.size());
     Iterator iterator = hashMap.keySet().iterator();
     while (iterator.hasNext()) {
@@ -61,7 +56,6 @@ public class StringToIntMapWritable implements Writable {
       word.write(out);
       count.write(out);
     }
-    */
   }
 
   public void clear() {
@@ -70,9 +64,9 @@ public class StringToIntMapWritable implements Writable {
 
   public void add(String word) {
     if (hashMap.containsKey(word)) {
-      hashMap.put(word, (Integer)hashMap.get(word) + 1);
+      hashMap.put(word, hashMap.get(word) + 1);
     } else {
-      hashMap.put(word, (Integer)1);
+      hashMap.put(word, 1);
     }
   }
 
