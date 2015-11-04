@@ -30,7 +30,7 @@ public class StringToIntMapWritable implements Writable {
   public void readFields(DataInput in) throws IOException {
 
     // TODO: implement deserialization
-    hashMap.clear();
+    this.clear();
     int size = in.readInt();
     for (int i = 0; i < size; i++) {
       word.readFields(in);
