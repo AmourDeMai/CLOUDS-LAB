@@ -76,7 +76,7 @@ class StripesMapper
         Text,   // TODO: change Object to output key type
         StringToIntMapWritable> { // TODO: change Object to output value type
 
-    StringToIntMapWritable stripe = new StringToIntMapWritable();
+    private StringToIntMapWritable stripe = new StringToIntMapWritable();
     @Override
     public void map(LongWritable key, // TODO: change Object to input key type
                     Text value, // TODO: change Object to input value type
