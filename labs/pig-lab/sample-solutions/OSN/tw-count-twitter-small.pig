@@ -1,4 +1,4 @@
-dataset = LOAD './sample-input/OSN/tw.txt' AS (id: long, fr: long);
+dataset = LOAD '/laboratory/twitter-small.txt' AS (id: long, fr: long);
 
 -- check if user IDs are valid (e.g. not null) and clean the dataset
 SPLIT dataset INTO good_dataset IF id is not null and fr is not null, bad_dataset OTHERWISE;
@@ -16,6 +16,6 @@ followings = FOREACH nodes2 GENERATE group, COUNT($1);
 
 outliers = FILTER friends BY followers<3;
 
-STORE friends INTO './local-output/OSN/twc/';
-STORE followings INTO './local-output/OSN/following/';
-STORE outliers INTO './local-output/OSN/outliers/';
+STORE friends INTO '/user/group001/pig/twc/pig-twitter-small-twc';
+STORE followings INTO '/user/group001/pig/following/pig-twitter-small-following';
+STORE outliers INTO '/user/group001/pig/outliers/pig-twitter-small-outliers';

@@ -1,6 +1,7 @@
 -- TODO: load the input dataset, located in ./local-input/OSN/tw.txt
-A = LOAD 'tw.txt' AS (id: long, fr: long);
-B = LOAD 'tw.txt' AS (id: long, fr: long);
+SET default_parallel 17;
+A = LOAD '/laboratory/twitter-big.txt' AS (id: long, fr: long);
+B = LOAD '/laboratory/twitter-big.txt' AS (id: long, fr: long);
 
 SPLIT A INTO good_A IF id is not null and fr is not null, bad_A OTHERWISE;
 SPLIT B INTO good_B IF id is not null and fr is not null, bad_B OTHERWISE;
@@ -14,5 +15,5 @@ p_result = FOREACH twohop GENERATE $0, $3;
 -- TODO: make sure you avoid loops (e.g., if user 12 and 13 follow eachother) 
 result = DISTINCT p_result;
 
-STORE result INTO 'join.output';
+STORE result INTO '/user/group001/pig/join/pig-twitter-big-join';
 
