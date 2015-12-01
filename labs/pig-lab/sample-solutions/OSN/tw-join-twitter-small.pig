@@ -1,4 +1,5 @@
 -- TODO: load the input dataset, located in ./local-input/OSN/tw.txt
+SET default_parallel 17;
 A = LOAD '/laboratory/twitter-small.txt' AS (id: long, fr: long);
 B = LOAD '/laboratory/twitter-small.txt' AS (id: long, fr: long);
 
@@ -14,5 +15,5 @@ p_result = FOREACH twohop GENERATE $0, $3;
 -- TODO: make sure you avoid loops (e.g., if user 12 and 13 follow eachother) 
 result = DISTINCT p_result;
 
-STORE result INTO '/user/group001/pig/join/pig-twitter-small-join';
+STORE result INTO '/user/group001/pig/join/pig-twitter-small-join1';
 
